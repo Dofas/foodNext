@@ -3,6 +3,19 @@ import Image from "next/image";
 import {getMeal} from "@/lib/meals";
 import {notFound} from "next/navigation";
 
+export async function generateMetadata({params}) {
+    const meal = getMeal(params.id);
+
+    if (!meal) {
+        notFound();
+    }
+
+    return {
+        title: meal.title,
+        description: meal.summary,
+    };
+}
+
 export default function MealDetailsPage({params}) {
     const meal = getMeal(params.id);
 
@@ -15,7 +28,7 @@ export default function MealDetailsPage({params}) {
     return <>
         <header className={classes.header}>
             <div className={classes.image}>
-                <Image src={meal.image} alt={meal.title} fill />
+                <Image src={`https://${process.env.BUCKET_URL}.s3.amazonaws.com/${meal.image}`} alt={meal.title} fill />
             </div>
             <div className={classes.headerText}>
                 <h1>{meal.title}</h1>
